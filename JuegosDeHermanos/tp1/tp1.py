@@ -9,17 +9,17 @@ def greedy(monedas):
         
         if fin-inicio >=2:
             if monedas[inicio]> monedas[fin]:
-                gananciaS+= int(monedas[inicio])
-                gananciaM+= int(monedas[fin])
+                gananciaS+= monedas[inicio]
+                gananciaM+= monedas[fin]
             else:
-                gananciaS+= int(monedas[fin])
-                gananciaM+= int(monedas[inicio])
+                gananciaS+= monedas[fin]
+                gananciaM+= monedas[inicio]
 
             inicio+=1
             fin-=1
         else:
             #numero de monedas impar (como empieza sofia y termina ella)
-            gananciaS+= int(monedas[inicio])
+            gananciaS+= monedas[inicio]
             inicio+=1
             fin-=1
              

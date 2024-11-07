@@ -1,7 +1,7 @@
 import sys
 import cargarpruebas
 from tp1.tp1 import greedy
-#from tp2.tp2 import pd
+from tp2.tp2 import pd
 
 
 if len(sys.argv) <2:
@@ -21,9 +21,9 @@ try:
 
         greedy(valores)
 
-##    elif nombre_funcion == "pd":
-##        valores = cargar_datos(nombre_archivo, pruebas2)
-##        pd(valores)
+    elif nombre_funcion == "pd":
+        valores = cargarpruebas.pruebas(nombre_archivo, "pruebas2")
+        pd(valores)
 
 ##    elif nombre_funcion == "bt":
 ##        valores = cargar_datos(nombre_archivo, pruebas3)
