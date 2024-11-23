@@ -3,6 +3,7 @@ import cargarpruebas
 from tp1.tp1 import greedy
 from tp2.tp2 import pd
 from tp3.src.backtracking import bt
+from tp3.src.pl import pl
 
 def mostrar_tablero(tablero):
     for i in range(len(tablero)):
@@ -37,6 +38,13 @@ try:
     elif nombre_funcion == "bt":
         campos = cargarpruebas.pruebas_tp3(nombre_archivo, "pruebas3")
         res = bt(campos[0], campos[1], campos[2])
+        mostrar_tablero(res[0])
+        print(f"Demanda cumplida: {sum(campos[0]) + sum(campos[1]) - res[1]}")
+        print(f"Demanda total: {sum(campos[0]) + sum(campos[1])}")
+
+    elif nombre_funcion == "pl":
+        campos = cargarpruebas.pruebas_tp3(nombre_archivo, "pruebas3")
+        res = pl(campos[0], campos[1], campos[2])
         mostrar_tablero(res[0])
         print(f"Demanda cumplida: {sum(campos[0]) + sum(campos[1]) - res[1]}")
         print(f"Demanda total: {sum(campos[0]) + sum(campos[1])}")
