@@ -3,10 +3,11 @@ def pd(monedas):
     dp = [[0] * n for _ in range(n)]
     
     # Llenamos la tabla `dp` de abajo hacia arriba
-    for length in range(1, n + 1):  # longitud del intervalo
-        for i in range(n - length + 1):
-            j = i + length - 1
-            if i == j:
+    for length in range(1, n + 1):       #longitud del intervalo
+        for i in range(n - length + 1):  #inicio del intervalo
+            j = i + length - 1           #final del intervalo
+            
+            if i == j:                   #caso base, una sola moneda
                 dp[i][j] = monedas[i]
             else:
                 # Maximizar ganancia al elegir la primera o la última moneda
