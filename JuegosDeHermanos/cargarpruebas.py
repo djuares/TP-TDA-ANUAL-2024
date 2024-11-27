@@ -1,21 +1,19 @@
 import os
 
-def pruebas(nombre_archivo, carpeta):
-    ruta_prueba = os.path.join(carpeta, nombre_archivo)
+def pruebas(ruta_archivo):
     try:
-        with open(ruta_prueba, 'r') as archivo:
+        with open(ruta_archivo, 'r') as archivo:
             contenido = archivo.read()
             valores = [int(valor) for valor in contenido.split(';')[1:]]  # Divide y limpia espacios
             return valores
             
     except FileNotFoundError:
-        raise FileNotFoundError(f"El archivo {nombre_archivo} no fue encontrado en la carpeta '{carpeta}'.")
+        raise FileNotFoundError(f"El archivo {ruta_archivo} no fue encontrado.")
 
-def pruebas_tp3(nombre_archivo, carpeta):
-    ruta_prueba = os.path.join(carpeta, nombre_archivo)
+def pruebas_tp3(ruta_archivo):
 
     try:
-        with open(ruta_prueba, 'r') as file:
+        with open(ruta_archivo, 'r') as file:
             secciones = []
             seccion_actual = []
             
@@ -45,4 +43,4 @@ def pruebas_tp3(nombre_archivo, carpeta):
             return demanda_fila, demanda_columna, largos_barcos
         
     except FileNotFoundError:
-        raise FileNotFoundError(f"El archivo {nombre_archivo} no fue encontrado en la carpeta '{carpeta}'.")
+        raise FileNotFoundError(f"El archivo {ruta_archivo} no fue encontrado.")
