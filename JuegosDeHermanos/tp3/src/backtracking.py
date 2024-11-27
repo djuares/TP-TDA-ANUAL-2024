@@ -10,29 +10,20 @@ def calcular_demanda_incumplida(demanda_fila, demanda_columna):
 
 def marcar_barco_en_tablero(tablero, nro_barco, tamaño_barco, posicion):
     if posicion == None:
-        return
+        return tablero
+    
+    copia_tablero = [fila[:] for fila in tablero]
     
     x, y = posicion[0]
     orientacion = posicion[1]
     if orientacion == "horizontal":
         for j in range(y, y + tamaño_barco):
-            tablero[x][j] = nro_barco
+            copia_tablero[x][j] = nro_barco
     elif orientacion == "vertical":
         for i in range(x, x + tamaño_barco):
-            tablero[i][y] = nro_barco
+            copia_tablero[i][y] = nro_barco
 
-def desmarcar_barco(tablero, tamaño_barco, posicion):
-    if posicion == None:
-        return
-    
-    x, y = posicion[0]
-    orientacion = posicion[1]
-    if orientacion == "horizontal":
-        for j in range(y, y + tamaño_barco):
-            tablero[x][j] = 0
-    elif orientacion == "vertical":
-        for i in range(x, x + tamaño_barco):
-            tablero[i][y] = 0
+    return copia_tablero
 
 def supera_demanda_permitida(tablero, posicion, tamaño_barco, demanda_fila, demanda_columna):
     if posicion == None:
@@ -129,99 +120,120 @@ def calcular_posibles_posiciones(tablero, n, m, tamaño_barco, demanda_fila, dem
     posiciones.append(None)
     return posiciones
 
-def actualizar_demandas(demanda_fila, demanda_columna, tamaño_barco, posicion, flag):
+def actualizar_demandas(demanda_fila, demanda_columna, tamaño_barco, posicion):
     if posicion == None:
         return demanda_fila, demanda_columna
     
     x, y = posicion[0]
     orientacion = posicion[1]
+    nueva_demanda_fila = demanda_fila.copy()
+    nueva_demanda_columna = demanda_columna.copy()
 
     if orientacion == 'horizontal':
-        for j in range(y, y + tamaño_barco):
-            if flag == False:
-                # Se usa al desmarcar un barco
-                demanda_fila[x] += 1
-                demanda_columna[j] += 1
-            else:
-                demanda_fila[x] -= 1
-                demanda_columna[j] -= 1
+        for j in range(y, y + tamaño_barco): 
+            nueva_demanda_fila[x] -= 1
+            nueva_demanda_columna[j] -= 1
     elif orientacion == 'vertical':
         for i in range(x, x + tamaño_barco):
-            if flag == False:
-                # Se usa al desmarcar un barco
-                demanda_fila[i] += 1
-                demanda_columna[y] += 1
-            else:
-                demanda_fila[i] -= 1
-                demanda_columna[y] -= 1
+            nueva_demanda_fila[i] -= 1
+            nueva_demanda_columna[y] -= 1
 
-    return demanda_fila, demanda_columna
+    return nueva_demanda_fila, nueva_demanda_columna
 
 
 def crear_tablero_vacio(n, m):
     return [[0] * m for _ in range(n)]
 
+def filtrar_barcos_por_demanda(barcos, demanda_fila, demanda_columna):
+    max_demanda = max(max(demanda_fila), max(demanda_columna))
+    return [barco for barco in barcos if barco <= max_demanda]
+
+def obtener_indice_prox_barco(barcos):
+    i = 0
+    for i in range(len(barcos)):
+        if barcos[i] != barcos[0]:
+            return i
+    return 1
+
 def batalla_naval_bt(tablero, barcos, demanda_fila, demanda_columna, mejor_demanda_inc, demanda_inc, indice, mejor_tablero):
     if mejor_demanda_inc == 0:
         return mejor_tablero, mejor_demanda_inc
 
-    # Caso base: si no hay más barcos para colocar
     if not barcos:
         demanda_inc = calcular_demanda_incumplida(demanda_fila, demanda_columna)
         if demanda_inc < mejor_demanda_inc:
             mejor_demanda_inc = demanda_inc
-            print("Actualizo demanda incumplida:", mejor_demanda_inc)
             mejor_tablero = copy.deepcopy(tablero)
         return mejor_tablero, mejor_demanda_inc
     
+    barcos_filtrados = filtrar_barcos_por_demanda(barcos, demanda_fila, demanda_columna)
+    if not barcos_filtrados:
+        return mejor_tablero, mejor_demanda_inc
+
     # Si con los barcos que me quedan no puedo mejorar la mejor demanda incumplida, corto la rama
-    if calcular_demanda_incumplida(demanda_fila, demanda_columna) - sum(barcos)*2 >= mejor_demanda_inc:
+    if calcular_demanda_incumplida(demanda_fila, demanda_columna) - sum(barcos_filtrados)*2 >= mejor_demanda_inc:
         return mejor_tablero, mejor_demanda_inc
     
-    posiciones = calcular_posibles_posiciones(tablero, len(tablero), len(tablero[0]), barcos[0], demanda_fila, demanda_columna)
+    posiciones = calcular_posibles_posiciones(tablero, len(tablero), len(tablero[0]), barcos_filtrados[0], demanda_fila, demanda_columna)
 
     mejor_tablero_actual = mejor_tablero 
 
     for posicion in posiciones:    
 
-        if calcular_demanda_incumplida(demanda_fila, demanda_columna) - sum(barcos)*2 >= mejor_demanda_inc:
+        if calcular_demanda_incumplida(demanda_fila, demanda_columna) - sum(barcos_filtrados)*2 >= mejor_demanda_inc:
             return mejor_tablero, mejor_demanda_inc
         
-        marcar_barco_en_tablero(tablero, indice, barcos[0], posicion)
+        nuevo_tablero = marcar_barco_en_tablero(tablero, indice, barcos_filtrados[0], posicion)
 
-        demanda_fila, demanda_columna = actualizar_demandas(demanda_fila, demanda_columna, barcos[0], posicion, True)
-        
-        nuevo_tablero, nuevo_demanda_inc = batalla_naval_bt(tablero, barcos[1:], demanda_fila, demanda_columna, mejor_demanda_inc, demanda_inc, indice+1, mejor_tablero_actual)
+        nueva_demanda_fila, nueva_demanda_columna = actualizar_demandas(demanda_fila, demanda_columna, barcos_filtrados[0], posicion)
+
+        # Si el barco actual no se puede ubicar, todos los barcos con igual tamaño tampoco, obtengo el primero distinto
+        if posicion == None:
+            i_prox_barco =  obtener_indice_prox_barco(barcos_filtrados)
+        else:
+            i_prox_barco = 1
+
+        nuevo_tablero, nuevo_demanda_inc = batalla_naval_bt(nuevo_tablero, barcos_filtrados[i_prox_barco:], nueva_demanda_fila, nueva_demanda_columna, mejor_demanda_inc, demanda_inc, indice+1, mejor_tablero_actual)
         
         if nuevo_demanda_inc < mejor_demanda_inc:
             mejor_demanda_inc = nuevo_demanda_inc
             mejor_tablero = nuevo_tablero
-
-        desmarcar_barco(tablero, barcos[0], posicion)
-        demanda_fila, demanda_columna = actualizar_demandas(demanda_fila, demanda_columna, barcos[0], posicion, False)
     
     return mejor_tablero, mejor_demanda_inc
 
-def sacar_barcos_muy_grandes(barcos, demanda_fila, demanda_columna):
-    barcos = [barco for barco in barcos if barco <= max(max(demanda_fila), max(demanda_columna))]
-    return barcos
+
+def es_posible_colocar_barco(n, m, tamaño_barco, demanda_fila, demanda_columna):
+    # Horizontal
+    for i in range(n):
+        for j in range(m - tamaño_barco + 1):
+            if all(demanda_columna[k] >= 1 for k in range(j, j + tamaño_barco)) and demanda_fila[i] >= tamaño_barco:
+                return True
+
+    # Vertical
+    for j in range(m):
+        for i in range(n - tamaño_barco + 1):
+            if all(demanda_fila[k] >= 1 for k in range(i, i + tamaño_barco)) and demanda_columna[j] >= tamaño_barco:
+                return True
+
+    return False
+
+def sacar_barcos_muy_grandes(n, m, barcos, demanda_fila, demanda_columna):
+    max_demanda = max(max(demanda_fila), max(demanda_columna))
+
+    for idx, barco in enumerate(barcos):
+        if barco > max_demanda:
+            continue
+        if es_posible_colocar_barco(n, m, barco, demanda_fila, demanda_columna):
+            return barcos[idx:]
+
+    return []
 
 def bt(demanda_fila, demanda_columna, barcos):
     tablero = crear_tablero_vacio(len(demanda_fila), len(demanda_columna))
     t1 = time.time()
-    barcos = sacar_barcos_muy_grandes(barcos, demanda_fila, demanda_columna)
+    barcos = sacar_barcos_muy_grandes(len(tablero), len(tablero[0]), barcos, demanda_fila, demanda_columna)
     barcos.sort(reverse=True)
     mejor_tablero, mejor_demanda_inc = batalla_naval_bt(tablero, barcos, demanda_fila, demanda_columna, float('inf'), 0, 1, tablero)
     t2 = time.time()
     print(f"Tiempo de ejecución: {t2 - t1}")
     return mejor_tablero, mejor_demanda_inc
-
-if __name__ == "__main__":
-
-    barcos = [1, 1]
-    demanda_fila = [3, 1, 2]
-    demanda_columna = [3, 2, 0]
-
-    tablero, demanda_incumplida = bt(demanda_fila, demanda_columna, barcos)
-    mostrar_tablero(tablero)
-    print(f"Demanda incumplida: {demanda_incumplida}")
