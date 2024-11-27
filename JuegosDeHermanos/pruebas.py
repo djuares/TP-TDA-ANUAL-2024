@@ -4,7 +4,7 @@ from tp1.tp1 import greedy
 from tp2.tp2 import pd
 from tp3.src.backtracking import bt
 from tp3.src.pl import pl
-from tp3.src.approx import ap
+from tp3.src.aprox import ap
 
 def mostrar_tablero(tablero):
     for i in range(len(tablero)):

@@ -7,14 +7,14 @@ INDEX = 2
 def queda_demanda_por_cumplir(demanda_filas, demanda_columnas):
     return sum(demanda_filas) + sum(demanda_columnas) > 0
 
-def obtener_demandas_ordenadas(demanda_filas, demanda_columnas):
-    demandas = []
-    for i in range(len(demanda_filas)):
-        demandas.append(("fila", demanda_filas[i], i))
-    for j in range(len(demanda_columnas)):
-        demandas.append(("columna", demanda_columnas[j], j))
+def obtener_max_demanda(demanda_filas, demanda_columnas):
+    max_demanda_filas = max(demanda_filas)
+    max_demanda_columnas = max(demanda_columnas)
     
-    return sorted(demandas, key=lambda x: x[1], reverse=True)
+    if max_demanda_filas > max_demanda_columnas:
+        return demanda_filas.index(max_demanda_filas), "fila"
+    else:
+        return demanda_columnas.index(max_demanda_columnas), "columna"
 
 def supera_demanda_permitida(tablero, posicion, tamaño_barco, demanda_fila, demanda_columna):
     
@@ -74,7 +74,7 @@ def es_posicion_valida(tablero, tamaño_barco, posicion, n, m):
 
     return True
 
-def posicion_valida(tablero, tamaño_barco, n, m, demanda_filas, demanda_columnas, tipo, indice):
+def posicion_valida(tablero, tamaño_barco, n, m, demanda_filas, demanda_columnas, indice, tipo):
     if tipo == "fila":
         for j in range(m):
             if j + tamaño_barco <= m:
@@ -96,41 +96,39 @@ def batalla_naval_individual_aprox(tablero, demanda_filas, demanda_columnas, bar
             break
 
         flag_marcado = False
-        demandas = obtener_demandas_ordenadas(demanda_filas, demanda_columnas)
+        indice_max_demanda, tipo = obtener_max_demanda(demanda_filas, demanda_columnas)
 
-        for demanda in demandas:
-            tipo = demanda[TYPE]
-            nro_demanda = demanda[DEMAND]
-            indice = demanda[INDEX]
             
-            for barco in barcos:
-                posicion = posicion_valida(tablero, barco, len(tablero), len(tablero[0]), demanda_filas, demanda_columnas, tipo, indice)
-                if posicion is None:
-                    continue
-                if tipo == "fila":
-                    if nro_demanda >= barco:
-                        for j in range(posicion[0][1], posicion[0][1] + barco):
-                            tablero[indice][j] = indice_barco
-                            demanda_columnas[j] -= 1
-                        demanda_filas[indice] -= barco
-                        barcos.remove(barco)
-                        indice_barco += 1
-                        flag_marcado = True
-                        break
-                
-                else:
-                    if barco <= len(tablero) and nro_demanda >= barco:
-                        for i in range(posicion[0][0], posicion[0][0] + barco):
-                            tablero[i][indice] = indice_barco
-                            demanda_filas[i] -= 1
-                        demanda_columnas[indice] -= barco
-                        barcos.remove(barco)
-                        indice_barco += 1
-                        flag_marcado = True
-                        break
+        for barco in barcos:
+            posicion = posicion_valida(tablero, barco, len(tablero), len(tablero[0]), demanda_filas, demanda_columnas, indice_max_demanda, tipo)
+            if posicion is None:
+                continue
+            
+            if tipo == "fila":
+                if demanda_filas[indice_max_demanda] >= barco:
+                    for j in range(posicion[0][1], posicion[0][1] + barco):
+                        tablero[indice_max_demanda][j] = indice_barco
+                        demanda_columnas[j] -= 1
+                    demanda_filas[indice_max_demanda] -= barco
+                    barcos.remove(barco)
+                    indice_barco += 1
+                    flag_marcado = True
+                    break
+            
+            else:
+                if barco <= len(tablero) and demanda_columnas[indice_max_demanda] >= barco:
+                    for i in range(posicion[0][0], posicion[0][0] + barco):
+                        tablero[i][indice_max_demanda] = indice_barco
+                        demanda_filas[i] -= 1
+                    demanda_columnas[indice_max_demanda] -= barco
+                    barcos.remove(barco)
+                    indice_barco += 1
+                    flag_marcado = True
+                    break
                 
             if flag_marcado:
                 break
+            
     return tablero, sum(demanda_filas) + sum(demanda_columnas)
 
 
