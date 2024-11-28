@@ -23,10 +23,28 @@ def guardar_resultados(n, m, x, u, v, barcos):
 
     return resultado
 
+def es_posicion_valida(barcos, i, j, b, o, demandas_filas, demandas_columnas, n, m):
+    if (o == 0 and j + barcos[b] > m) or (o == 1 and i + barcos[b] > n):
+        return False
+    
+    if (o == 0 and barcos[b] > demandas_filas[i]) or (o == 1 and barcos[b] > demandas_columnas[j]):
+        return False
+    
+    if o == 0:
+        for y in range(j, j + barcos[b]):
+            if demandas_columnas[y] == 0:
+                return False
+    else:
+        for x in range(i, i + barcos[b]):
+            if demandas_filas[x] == 0:
+                return False
+    
+    return True
+
 def batalla_naval_individual_pl(n, m, k, barcos, demandas_filas, demandas_columnas):
 
     # Crear el problema
-    problema = LpProblem("Minimizar demanda incumplida", LpMinimize)
+    problema = LpProblem("Minimizar_demanda_incumplida", LpMinimize)
 
     # Variables de decision
     # x -> Barco b en la posición (i, j) y orientación o
@@ -40,10 +58,9 @@ def batalla_naval_individual_pl(n, m, k, barcos, demandas_filas, demandas_column
         for j in range(m)
         for b in range(k)
         for o in [0, 1]
-        if (o == 0 and j + barcos[b] <= m) or (o == 1 and i + barcos[b] <= n)
+        if es_posicion_valida(barcos, i, j, b, o, demandas_filas, demandas_columnas, n, m)
     ),
-    cat=LpBinary
-)
+    cat=LpBinary)
     u = LpVariable.dicts("u", (i for i in range(n)), lowBound=0, cat=LpInteger)
     v = LpVariable.dicts("v", (j for j in range(m)), lowBound=0, cat=LpInteger)
 
@@ -94,26 +111,23 @@ def batalla_naval_individual_pl(n, m, k, barcos, demandas_filas, demandas_column
             ), f"No_Solapamiento_{i}_{j}"
 
     # Restricciones para evitar barcos contiguos y diagonales
-    for i in range(n):
-        for j in range(m):
-            for b in range(k):
-                for o in [0, 1]:
-                    if o == 0 and j + barcos[b] <= m:  # Barco horizontal
-                        for l in range(barcos[b]):
-                            for di, dj in [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]:
-                                ni, nj = i + di, j + l + dj
-                                if 0 <= ni < n and 0 <= nj < m:
-                                    problema += (
-                                        lpSum(x[ni, nj, b2, o2] for b2 in range(k) if b2 != b for o2 in [0, 1] if (ni,nj,b2,o2) in x) <= 1 - x[i, j, b, o]
-                                    )
-                    elif o == 1 and i + barcos[b] <= n:  # Barco vertical
-                        for l in range(barcos[b]):
-                            for di, dj in [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]:
-                                ni, nj = i + l + di, j + dj
-                                if 0 <= ni < n and 0 <= nj < m:
-                                    problema += (
-                                        lpSum(x[ni, nj, b2, o2] for b2 in range(k) if b2 != b for o2 in [0, 1] if (ni,nj,b2,o2) in x) <= 1 - x[i, j, b, o]
-                                    )
+    for (i, j, b, o) in x:
+        if o == 0 and j + barcos[b] <= m:  # Barco horizontal
+            for l in range(barcos[b]):
+                for di, dj in [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]:
+                    ni, nj = i + di, j + l + dj
+                    if 0 <= ni < n and 0 <= nj < m:
+                        problema += (
+                            lpSum(x[ni, nj, b2, o2] for (ni2, nj2, b2, o2) in x if ni2 == ni and nj2 == nj and b2 != b) <= 1 - x[i, j, b, o]
+                        )
+        elif o == 1 and i + barcos[b] <= n:  # Barco vertical
+            for l in range(barcos[b]):
+                for di, dj in [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]:
+                    ni, nj = i + l + di, j + dj
+                    if 0 <= ni < n and 0 <= nj < m:
+                        problema += (
+                            lpSum(x[ni, nj, b2, o2] for (ni2, nj2, b2, o2) in x if ni2 == ni and nj2 == nj and b2 != b) <= 1 - x[i, j, b, o]
+                        )
 
 
     # Resolver el modelo
@@ -130,4 +144,3 @@ def pl(demanda_filas, demanda_columnas, barcos):
     k = len(barcos)
 
     return batalla_naval_individual_pl(n, m, k, barcos, demanda_filas, demanda_columnas)
-
