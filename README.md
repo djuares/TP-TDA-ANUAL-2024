@@ -1,8 +1,8 @@
 **Ejecutar pruebas:**
 
 ```bash
-python pruebas.py <metodo> <pruebaX.txt>
+python pruebas.py <metodo> <pruebasX/Y.txt>
 ```
 Ejemplo:
 ```bash
-python pruebas.py greedy 20.txt 
+python pruebas.py greedy prebas1/20.txt 
