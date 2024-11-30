@@ -27,14 +27,13 @@ ruta_archivo_pruebas = sys.argv[2]
 try:
     # Selecciona la función y carpeta de prueba basada en el argumento
     if nombre_funcion == "greedy":
-
         valores = cargarpruebas.pruebas(ruta_archivo_pruebas)
-
         greedy(valores)
 
     elif nombre_funcion == "pd":
         valores = cargarpruebas.pruebas(ruta_archivo_pruebas)
-        pd(valores)
+        resultado= pd(valores)
+        print(resultado)
 
     elif nombre_funcion == "bt":
         campos = cargarpruebas.pruebas_tp3(ruta_archivo_pruebas)
