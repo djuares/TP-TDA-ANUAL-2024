@@ -4,10 +4,29 @@ from ..tp3.src.backtracking import bt
 from ..tp3.src.pl import pl
 from ..tp3.src.aprox import ap
 
-def generar_set_datos(cantidad):
+
+# Genera un set de datos de tamaño n para el problema de las monedas. 
+# Si se especifica una semilla, se utilizara para generar los datos.
+def generar_set_datos_monedas(semilla, n):
+    if semilla != None:
+        seed(semilla)
+
     set_datos = []
 
-    for i in range(1, cantidad+1):
+    for i in range(1, n+1):
+        set_datos.append(randint(1, 10000))
+    
+    return set_datos
+
+# Genera un set de datos de tamaño n para el problema de la Batalla Naval. 
+# Si se especifica una semilla, se utilizara para generar los datos.
+def generar_set_datos_batalla_naval(semilla, n):
+    if semilla != None:
+        seed(semilla)
+
+    set_datos = []
+
+    for i in range(1, n+1):
         n = i * 3
         m = i * 3
         k = i * 2
@@ -19,6 +38,8 @@ def generar_set_datos(cantidad):
     
     return set_datos
 
+
+# Realiza mediciones de tiempo para un set de datos y un algoritmo dado [bt, pl, ap].
 def mediciones_tiempo(set_datos, algoritmo):
     mediciones = []
 
