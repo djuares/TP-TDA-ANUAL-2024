@@ -14,7 +14,7 @@ Ejemplo:
 python pruebas.py greedy pruebas1/20.txt 
 ```
 ### Opciones de algoritmos
-Las pruebas se pueden ejecutar con las siguientes opciones de <algoritmo>:
+Las pruebas se pueden ejecutar con las siguientes opciones de algoritmo:
 * `bt`: Backtracking
 * `pl`: Programación Lineal Entera
 * `ap`: Algoritmo de aproximación
@@ -25,4 +25,4 @@ Las pruebas se pueden ejecutar con las siguientes opciones de <algoritmo>:
 Para ver los informes de cada trabajo práctico, moverse a la carpeta del trabajo práctico correspondiente o tocar los siguientes enlaces:
 * Informe TP1
 * Informe TP2
-* [Informe TP3](JuegosDeHermanos/tp3/InformeTP3.pdf).
+* [Informe TP3](JuegosDeHermanos/tp3/InformeTP3.pdf)
