@@ -91,30 +91,3 @@ def certificador_eficiente(tablero, barcos, requisitos_fil, requisitos_col):
         return False
 
     return True
-
-
-def crear_tablero_fijo():
-    tablero = [
-        [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 1, 0, 0, 1, 1, 1, 1],
-        [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [1, 1, 1, 0, 0, 0, 0, 1, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 1, 0, 0],
-        [0, 0, 1, 1, 1, 0, 0, 0, 0, 0],
-        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-        [1, 0, 0, 0, 1, 0, 0, 0, 0, 0]
-    ]
-    return tablero
-
-if __name__ == "__main__":
-
-    tamaños_barcos = [4, 3, 3, 3, 3, 1, 1]
-
-    tablero = crear_tablero_fijo()
-   
-    requisitos_fil = [1,5,1,0,4,1,1,3,0,2]
-    requisitos_col = [2,1,2,4,2,0,1,4,1,1]
-
-    print(certificador_eficiente(tablero, tamaños_barcos, requisitos_fil, requisitos_col))
