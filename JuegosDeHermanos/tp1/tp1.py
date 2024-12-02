@@ -1,28 +1,31 @@
 def greedy(monedas):
-    gananciaS= 0
-    gananciaM= 0
+    n= len(monedas)
+    inicio= 0
+    final=len(monedas)-1
 
-    acciones = []
+    acciones = [[], []]
 
     turno = 0 # 0: Sophia, 1: Mateo    
-    while len(monedas) > 0:
+    while n > 0:
         
         if turno == 0:
-            if monedas[0] > monedas[-1]:
-                gananciaS += monedas.pop(0)
-                acciones.append("Primera moneda para Sophia")
+            if monedas[inicio] > monedas[final]:
+                acciones[0].append(monedas[inicio])
+                inicio+=1
             else:
-                gananciaS += monedas.pop(-1)
-                acciones.append("Ultima moneda para Sophia")
+                acciones[0].append(monedas[final])
+                final-=1
+
         else:
-            if monedas[0] > monedas[-1]:
-                gananciaM += monedas.pop(-1)
-                acciones.append("Ultima moneda para Mateo")
+            if monedas[inicio] > monedas[final]:
+                acciones[1].append(monedas[final])
+                final-=1
             else:
-                gananciaM += monedas.pop(0)
-                acciones.append("Primera moneda para Mateo")
+                acciones[1].append(monedas[inicio])
+                inicio+=1
+        n-=1
         
         turno = 1 - turno
              
-    print(acciones)
-    print(f"Ganancia Sofia: {gananciaS} - Ganancia Mateo: {gananciaM}")
+    print(f"Ganancia Sofia: {sum(acciones[0])} - Monedas: {acciones[0]} \n")
+    print(f"Ganancia Mateo: {sum(acciones[1])} - Monedas: {acciones[1]}")
