@@ -23,6 +23,7 @@ def pd(monedas):
     n = len(monedas)
     # Crear tabla bidimensional para almacenar los resultados
     dp = [[0] * n for _ in range(n)]
+    decisiones = [[None] * n for _ in range(n)]  # Para guardar las decisiones tomadas
 
     # Llenar la tabla base: casos con una sola moneda
     for i in range(n):
@@ -43,11 +44,42 @@ def pd(monedas):
                 dp[inicio + 1][fin - 1] if (inicio + 1) <= fin - 1 and (monedas[inicio]>monedas[fin-1]) else 0,
             )
             dp[inicio][fin] = max(elegir_inicio,  elegir_fin )
-     
+
+             # Guardar la mejor opción y la decisión tomada
+            if elegir_inicio > elegir_fin:
+                dp[inicio][fin] = elegir_inicio
+                decisiones[inicio][fin] = 'inicio'  # Elegir la moneda del inicio
+            else:
+                dp[inicio][fin] = elegir_fin
+                decisiones[inicio][fin] = 'fin'  # Elegir la moneda del final
 
     # El resultado está en dp[0][n-1], considerando todas las monedas
-    return print(dp [0][n-1])
+    #print(dp)
+    return reconstruir_solucion(decisiones, n, monedas)
 
+def reconstruir_solucion(decisiones,n, monedas):
+    sofia = []
+    mateo = []
+    inicio, fin = 0, n - 1
+    turno_sofia = True  # Sofía empieza primero
+    while inicio <= fin:
+        if decisiones[inicio][fin] == 'inicio':
+            if turno_sofia:
+                sofia.append(monedas[inicio])
+            else:
+                mateo.append(monedas[inicio])
+            inicio += 1
+        else:
+            if turno_sofia:
+                sofia.append(monedas[fin])
+            else:
+                mateo.append(monedas[fin])
+            fin -= 1
+        
+        turno_sofia = not turno_sofia
+
+    print(f"Monedas seleccionadas por Sofía: {sofia} \n  Suma Total: {sum(sofia)} \n")
+    print(f"Monedas seleccionadas por Mateo: {mateo} \n  Suma Total: {sum(mateo)}")
 
 def pd_aux3(monedas, inicio, fin, ganancia):
     # Caso base: Si ya no hay monedas
