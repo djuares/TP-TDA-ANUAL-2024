@@ -30,12 +30,12 @@ def generar_set_datos_batalla_naval(semilla, n):
         n = i * 3
         m = i * 3
         k = i * 2
-        barcos = [randint(1, 16) for _ in range(k)]
-        demandas_filas = [randint(0, 15) for _ in range(n)]
-        demandas_columnas = [randint(0, 15) for _ in range(m)]
+        barcos = [randint(1, min(i * 3, 16)) for _ in range(k)]
+        demandas_filas = [randint(0, min(i * 3, 15)) for _ in range(n)]
+        demandas_columnas = [randint(0, min(i * 3, 15)) for _ in range(m)]
 
         set_datos.append((barcos, demandas_filas, demandas_columnas))
-    
+
     return set_datos
 
 
