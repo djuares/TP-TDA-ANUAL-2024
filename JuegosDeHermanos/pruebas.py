@@ -32,8 +32,8 @@ try:
 
     elif nombre_funcion == "pd":
         valores = cargarpruebas.pruebas(ruta_archivo_pruebas)
-        resultado= pd(valores)
-        print(resultado)
+        pd(valores)
+    
 
     elif nombre_funcion == "bt":
         campos = cargarpruebas.pruebas_tp3(ruta_archivo_pruebas)
