@@ -1,11 +1,12 @@
 def greedy(monedas):
     n= len(monedas)
     inicio= 0
-    final=len(monedas)-1
+    final=n-1
 
     acciones = [[], []]
 
     turno = 0 # 0: Sophia, 1: Mateo    
+    
     while n > 0:
         
         if turno == 0:
