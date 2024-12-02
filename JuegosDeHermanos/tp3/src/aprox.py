@@ -85,31 +85,49 @@ def posicion_valida(tablero, tamaño_barco, n, m, demanda_filas, demanda_columna
             if i + tamaño_barco <= n:
                 if es_posicion_valida(tablero, tamaño_barco, ((i, indice), "vertical"), n, m) and not supera_demanda_permitida(tablero, ((i, indice), "vertical"), tamaño_barco, demanda_filas, demanda_columnas):
                     return ((i, indice), "vertical")
-    
+
+def marcar_barco_y_actualizar_demandas(tablero, tamaño_barco, posicion, demanda_filas, demanda_columnas):
+    x, y = posicion[0]
+    orientacion = posicion[1]
+
+    if orientacion == 'horizontal':
+        for j in range(y, y + tamaño_barco):
+            tablero[x][j] = 1
+            demanda_filas[x] -= 1
+            demanda_columnas[j] -= 1
+    elif orientacion == 'vertical':
+        for i in range(x, x + tamaño_barco):
+            tablero[i][y] = 1
+            demanda_filas[i] -= 1
+            demanda_columnas[y] -= 1
+
 def batalla_naval_individual_aprox(tablero, demanda_filas, demanda_columnas, barcos):
 
     indice_barco = 1
     flag_marcado = True
+    n = len(tablero)
+    m = len(tablero[0])
 
+    # Mientras haya demanda por cumplir y barcos por ubicar
     while queda_demanda_por_cumplir(demanda_filas, demanda_columnas) and len(barcos) > 0:
         if not flag_marcado:
             break
 
         flag_marcado = False
+
+        # Obtengo el indice de la fila/columna con mayor demanda y su tipo (fila/columna)
         indice_max_demanda, tipo = obtener_max_demanda(demanda_filas, demanda_columnas)
 
-            
         for barco in barcos:
-            posicion = posicion_valida(tablero, barco, len(tablero), len(tablero[0]), demanda_filas, demanda_columnas, indice_max_demanda, tipo)
+            
+            # Obtengo una posicion valida para ubicar el barco de mayor tamaño
+            posicion = posicion_valida(tablero, barco, n, m, demanda_filas, demanda_columnas, indice_max_demanda, tipo)
             if posicion is None:
                 continue
             
             if tipo == "fila":
                 if demanda_filas[indice_max_demanda] >= barco:
-                    for j in range(posicion[0][1], posicion[0][1] + barco):
-                        tablero[indice_max_demanda][j] = indice_barco
-                        demanda_columnas[j] -= 1
-                    demanda_filas[indice_max_demanda] -= barco
+                    marcar_barco_y_actualizar_demandas(tablero, barco, posicion, demanda_filas, demanda_columnas)
                     barcos.remove(barco)
                     indice_barco += 1
                     flag_marcado = True
@@ -117,10 +135,7 @@ def batalla_naval_individual_aprox(tablero, demanda_filas, demanda_columnas, bar
             
             else:
                 if barco <= len(tablero) and demanda_columnas[indice_max_demanda] >= barco:
-                    for i in range(posicion[0][0], posicion[0][0] + barco):
-                        tablero[i][indice_max_demanda] = indice_barco
-                        demanda_filas[i] -= 1
-                    demanda_columnas[indice_max_demanda] -= barco
+                    marcar_barco_y_actualizar_demandas(tablero, barco, posicion, demanda_filas, demanda_columnas)
                     barcos.remove(barco)
                     indice_barco += 1
                     flag_marcado = True
