@@ -6,7 +6,7 @@ def greedy(monedas):
     acciones = [[], []]
 
     turno = 0 # 0: Sophia, 1: Mateo    
-    
+
     while n > 0:
         
         if turno == 0:
@@ -27,6 +27,6 @@ def greedy(monedas):
         n-=1
         
         turno = 1 - turno
-             
-    print(f"Ganancia Sofia: {sum(acciones[0])} - Monedas: {acciones[0]} \n")
-    print(f"Ganancia Mateo: {sum(acciones[1])} - Monedas: {acciones[1]}")
+
+    print(f"Ganancia Sofia: {sum(acciones[0])} - Monedas: {acciones[0]} \nGanancia Mateo: {sum(acciones[1])} - Monedas: {acciones[1]}")
+    
