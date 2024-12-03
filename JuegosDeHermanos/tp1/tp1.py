@@ -28,5 +28,6 @@ def greedy(monedas):
         
         turno = 1 - turno
 
-    print(f"Ganancia Sofia: {sum(acciones[0])} - Monedas: {acciones[0]} \nGanancia Mateo: {sum(acciones[1])} - Monedas: {acciones[1]}")
     
+    print (f" Ganancia Sofia : {sum(acciones [0])} - Monedas : { acciones[0]} \n ")
+    print (f" Ganancia Mateo : {sum ( acciones [1])} - Monedas : {acciones [1]} ")

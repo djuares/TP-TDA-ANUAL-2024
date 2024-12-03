@@ -2,7 +2,7 @@ def pd(monedas):
     n = len(monedas)
     # Crear tabla bidimensional para almacenar los resultados
     dp = [[0] * n for _ in range(n)]
-    decisiones = [[None] * n for _ in range(n)]  # Para guardar las decisiones tomadas
+
 
     # Llenar la tabla base: casos con una sola moneda
     for i in range(n):
@@ -24,13 +24,6 @@ def pd(monedas):
             )
             dp[inicio][fin] = max(elegir_inicio,  elegir_fin )
 
-             # Guardar la mejor opción y la decisión tomada
-            if elegir_inicio > elegir_fin:
-                dp[inicio][fin] = elegir_inicio
-                decisiones[inicio][fin] = 'inicio'  # Elegir la moneda del inicio
-            else:
-                dp[inicio][fin] = elegir_fin
-                decisiones[inicio][fin] = 'fin'  # Elegir la moneda del final
 
     # El resultado está en dp[0][n-1], considerando todas las monedas
     
