@@ -34,7 +34,7 @@ def pd(monedas):
 
     # El resultado está en dp[0][n-1], considerando todas las monedas
     
-    print(f"Ganancia Sofia: {dp[0][n-1]}")
+    print(f"Ganancia Sofia: {dp[0][n-1]} \nGanancia Mateo: {sum(monedas)-dp[0][n-1]}")
 
 
 
