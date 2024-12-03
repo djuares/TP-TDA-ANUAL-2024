@@ -1,14 +1,19 @@
 import os
 
+
 def pruebas(ruta_archivo):
     try:
         with open(ruta_archivo, 'r') as archivo:
             contenido = archivo.read()
-            valores = [int(valor) for valor in contenido.split(';')[1:]]  # Divide y limpia espacios
-            return valores
+            
+            # Dividir el contenido por ';' y filtrar comentarios
+            valores = [int(valor.strip()) for valor in contenido.split(";") if not valor.strip().startswith("#")]
+    
+        return valores
             
     except FileNotFoundError:
         raise FileNotFoundError(f"El archivo {ruta_archivo} no fue encontrado.")
+
 
 def pruebas_tp3(ruta_archivo):
 
