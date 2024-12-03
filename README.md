@@ -23,6 +23,6 @@ Las pruebas se pueden ejecutar con las siguientes opciones de algoritmo:
 
 ## Informes
 Para ver los informes de cada trabajo práctico, moverse a la carpeta del trabajo práctico correspondiente o tocar los siguientes enlaces:
-* Informe TP1
-* Informe TP2
+* [Informe TP1](JuegosDeHermanos/tp1/InformeTP1.pdf)
+* [Informe TP2](JuegosDeHermanos/tp2/InformeTP2.pdf)
 * [Informe TP3](JuegosDeHermanos/tp3/InformeTP3.pdf)
