@@ -1,20 +1,7 @@
 import time
 
-TYPE = 0
-DEMAND = 1
-INDEX = 2
-
 def queda_demanda_por_cumplir(demanda_filas, demanda_columnas):
     return sum(demanda_filas) + sum(demanda_columnas) > 0
-
-def obtener_max_demanda(demanda_filas, demanda_columnas):
-    max_demanda_filas = max(demanda_filas)
-    max_demanda_columnas = max(demanda_columnas)
-    
-    if max_demanda_filas > max_demanda_columnas:
-        return demanda_filas.index(max_demanda_filas), "fila"
-    else:
-        return demanda_columnas.index(max_demanda_columnas), "columna"
 
 def supera_demanda_permitida(tablero, posicion, tamaño_barco, demanda_fila, demanda_columna):
     
@@ -102,49 +89,46 @@ def marcar_barco_y_actualizar_demandas(tablero, tamaño_barco, posicion, demanda
             demanda_columnas[y] -= 1
 
 def batalla_naval_individual_aprox(tablero, demanda_filas, demanda_columnas, barcos):
-
     indice_barco = 1
-    flag_marcado = True
     n = len(tablero)
     m = len(tablero[0])
-
-    # Mientras haya demanda por cumplir y barcos por ubicar
-    while queda_demanda_por_cumplir(demanda_filas, demanda_columnas) and len(barcos) > 0:
+    
+    while queda_demanda_por_cumplir(demanda_filas, demanda_columnas) and barcos:
+        flag_marcado = False
+        
+        # Obtenemos todos los indices de las demandas junto con su orientacion (fila/columna)
+        demandas = [(i, "fila", demanda_filas[i]) for i in range(n) if demanda_filas[i] > 0] + \
+                   [(j, "columna", demanda_columnas[j]) for j in range(m) if demanda_columnas[j] > 0]
+        
+        # Ordenar por demanda de mayor a menor
+        demandas.sort(key=lambda x: x[2], reverse=True)
+        
+        for indice_max_demanda, tipo, _ in demandas:
+            for barco in barcos:
+                posicion = posicion_valida(tablero, barco, n, m, demanda_filas, demanda_columnas, indice_max_demanda, tipo)
+                
+                if posicion is not None and not supera_demanda_permitida(tablero, posicion, barco, demanda_filas, demanda_columnas):
+                    if tipo == "fila" and demanda_filas[indice_max_demanda] >= barco:
+                        marcar_barco_y_actualizar_demandas(tablero, barco, posicion, demanda_filas, demanda_columnas)
+                        barcos.remove(barco)
+                        indice_barco += 1
+                        flag_marcado = True
+                        break
+                    elif tipo == "columna" and demanda_columnas[indice_max_demanda] >= barco:
+                        marcar_barco_y_actualizar_demandas(tablero, barco, posicion, demanda_filas, demanda_columnas)
+                        barcos.remove(barco)
+                        indice_barco += 1
+                        flag_marcado = True
+                        break
+            
+            if flag_marcado:
+                break  # Si pudimos colocar un barco, volvemos a calcular demandas
+        
+        # Si no pudimos colocar ningun barco en ninguna fila/columna, terminamos
         if not flag_marcado:
             break
-
-        flag_marcado = False
-
-        # Obtengo el indice de la fila/columna con mayor demanda y su tipo (fila/columna)
-        indice_max_demanda, tipo = obtener_max_demanda(demanda_filas, demanda_columnas)
-
-        for barco in barcos:
-            
-            # Obtengo una posicion valida para ubicar el barco de mayor tamaño
-            posicion = posicion_valida(tablero, barco, n, m, demanda_filas, demanda_columnas, indice_max_demanda, tipo)
-            if posicion is None:
-                continue
-            
-            if tipo == "fila":
-                if demanda_filas[indice_max_demanda] >= barco:
-                    marcar_barco_y_actualizar_demandas(tablero, barco, posicion, demanda_filas, demanda_columnas)
-                    barcos.remove(barco)
-                    indice_barco += 1
-                    flag_marcado = True
-                    break
-            
-            else:
-                if barco <= len(tablero) and demanda_columnas[indice_max_demanda] >= barco:
-                    marcar_barco_y_actualizar_demandas(tablero, barco, posicion, demanda_filas, demanda_columnas)
-                    barcos.remove(barco)
-                    indice_barco += 1
-                    flag_marcado = True
-                    break
-                
-            if flag_marcado:
-                break
-            
-    return tablero, sum(demanda_filas) + sum(demanda_columnas)
+    
+    return tablero, max(0, sum(demanda_filas) + sum(demanda_columnas))
 
 
 def crear_tablero_vacio(n, m):
@@ -158,4 +142,12 @@ def ap(demanda_fila, demanda_columna, barcos):
     t2 = time.time()
     print(f"Tiempo de ejecución: {t2 - t1}")
     return mejor_tablero, mejor_demanda_inc
+
+
+if __name__ == "__main__":
+    demanda_filas = [1,0,1,0,1,0,0,1,1,1]
+    demanda_columnas = [1,4,3]
+    barcos = [3,3,4]
+    ap(demanda_filas, demanda_columnas, barcos)
+
     
