@@ -21,8 +21,5 @@ Las pruebas se pueden ejecutar con las siguientes opciones de algoritmo:
 * `pd`: Programación Dinámica
 * `greedy`: Greedy
 
-## Informes
-Para ver los informes de cada trabajo práctico, moverse a la carpeta del trabajo práctico correspondiente o tocar los siguientes enlaces:
-* [Informe TP1](JuegosDeHermanos/tp1/InformeTP1.pdf)
-* [Informe TP2](JuegosDeHermanos/tp2/InformeTP2.pdf)
-* [Informe TP3](JuegosDeHermanos/tp3/InformeTP3.pdf)
+## Informe
+* (Informe_TP_TDA.pdf)
