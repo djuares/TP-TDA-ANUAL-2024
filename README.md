@@ -22,6 +22,5 @@ Las pruebas se pueden ejecutar con las siguientes opciones de algoritmo:
 * `greedy`: Greedy
 
 ## Informe
-* TP-TDA-ANUAL-2024
-/Informe_Tp_TDA.pdf
-
+Para visualizar el informe del trabajo práctico, tocar el siguiente link:
+* [Informe](/Informe_Tp_TDA.pdf)
