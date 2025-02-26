@@ -22,4 +22,4 @@ Las pruebas se pueden ejecutar con las siguientes opciones de algoritmo:
 * `greedy`: Greedy
 
 ## Informe
-* (Informe_Tp_TDA.pdf)
+* (/Informe_Tp_TDA.pdf)
